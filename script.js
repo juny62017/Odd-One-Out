@@ -1,7 +1,19 @@
 let grid =
 document.querySelector(".grid");
 
+let scoreText =
+document.querySelector(".score");
+
+let levelText =
+document.querySelector(".level");
+
 let totalBoxes = 16;
+
+let score = 0;
+
+let level = 1;
+
+let oddIndex = 0;
 
 function randomNumber(min,max){
 
@@ -31,8 +43,11 @@ function createPuzzle(){
     let oddColor =
     `rgb(${red+15},${green+15},${blue+15})`;
 
-    let oddIndex =
-    randomNumber(0,totalBoxes-1);
+    oddIndex =
+    randomNumber(
+        0,
+        totalBoxes-1
+    );
 
     for(
         let i = 0;
@@ -50,6 +65,9 @@ function createPuzzle(){
             box.style.background =
             oddColor;
 
+            box.dataset.odd =
+            "true";
+
         }else{
 
             box.style.background =
@@ -57,7 +75,42 @@ function createPuzzle(){
 
         }
 
+        box.addEventListener(
+            "click",
+            checkAnswer
+        );
+
         grid.appendChild(box);
+
+    }
+
+}
+
+function checkAnswer(){
+
+    if(
+        this.dataset.odd ===
+        "true"
+    ){
+
+        this.classList.add(
+            "correct"
+        );
+
+        score++;
+
+        level++;
+
+        scoreText.innerText =
+        score;
+
+        levelText.innerText =
+        level;
+
+        setTimeout(
+            createPuzzle,
+            200
+        );
 
     }
 
