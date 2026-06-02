@@ -7,13 +7,32 @@ document.querySelector(".score");
 let levelText =
 document.querySelector(".level");
 
+let timerText =
+document.querySelector(".timer");
+
+let startBtn =
+document.querySelector(".start-btn");
+
+let restartBtn =
+document.querySelector(".restart-btn");
+
+let gameOverBox =
+document.querySelector(".game-over");
+
+let finalScore =
+document.querySelector(".final-score");
+
 let totalBoxes = 16;
 
 let score = 0;
 
 let level = 1;
 
-let oddIndex = 0;
+let time = 30;
+
+let gameRunning = false;
+
+let timerInterval;
 
 function randomNumber(min,max){
 
@@ -25,6 +44,10 @@ function randomNumber(min,max){
 }
 
 function createPuzzle(){
+
+    if(!gameRunning){
+        return;
+    }
 
     grid.innerHTML = "";
 
@@ -43,17 +66,13 @@ function createPuzzle(){
     let oddColor =
     `rgb(${red+15},${green+15},${blue+15})`;
 
-    oddIndex =
+    let oddIndex =
     randomNumber(
         0,
-        totalBoxes-1
+        totalBoxes - 1
     );
 
-    for(
-        let i = 0;
-        i < totalBoxes;
-        i++
-    ){
+    for(let i=0;i<totalBoxes;i++){
 
         let box =
         document.createElement("div");
@@ -89,13 +108,15 @@ function createPuzzle(){
 function checkAnswer(){
 
     if(
+        !gameRunning
+    ){
+        return;
+    }
+
+    if(
         this.dataset.odd ===
         "true"
     ){
-
-        this.classList.add(
-            "correct"
-        );
 
         score++;
 
@@ -107,6 +128,10 @@ function checkAnswer(){
         levelText.innerText =
         level;
 
+        this.classList.add(
+            "correct"
+        );
+
         setTimeout(
             createPuzzle,
             200
@@ -116,4 +141,70 @@ function checkAnswer(){
 
 }
 
-createPuzzle();
+function startGame(){
+
+    score = 0;
+    level = 1;
+    time = 30;
+
+    gameRunning = true;
+
+    scoreText.innerText =
+    score;
+
+    levelText.innerText =
+    level;
+
+    timerText.innerText =
+    time;
+
+    gameOverBox.classList.add(
+        "hidden"
+    );
+
+    createPuzzle();
+
+    clearInterval(
+        timerInterval
+    );
+
+    timerInterval =
+    setInterval(function(){
+
+        time--;
+
+        timerText.innerText =
+        time;
+
+        if(time <= 0){
+
+            endGame();
+
+        }
+
+    },1000);
+
+}
+
+function endGame(){
+
+    gameRunning = false;
+
+    clearInterval(
+        timerInterval
+    );
+
+    finalScore.innerText =
+    "Score: " + score;
+
+    gameOverBox.classList.remove(
+        "hidden"
+    );
+
+}
+
+startBtn.onclick =
+startGame;
+
+restartBtn.onclick =
+startGame;
