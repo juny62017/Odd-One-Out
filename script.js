@@ -10,6 +10,9 @@ document.querySelector(".level");
 let timerText =
 document.querySelector(".timer");
 
+let bestScoreText =
+document.querySelector(".best-score");
+
 let startBtn =
 document.querySelector(".start-btn");
 
@@ -29,6 +32,8 @@ let score = 0;
 let level = 1;
 
 let time = 30;
+
+let bestScore = 0;
 
 let gameRunning = false;
 
@@ -60,11 +65,17 @@ function createPuzzle(){
     let blue =
     randomNumber(50,220);
 
+    let difficulty =
+    Math.max(
+        15 - Math.floor(level / 3),
+        3
+    );
+
     let normalColor =
     `rgb(${red},${green},${blue})`;
 
     let oddColor =
-    `rgb(${red+15},${green+15},${blue+15})`;
+    `rgb(${red+difficulty},${green+difficulty},${blue+difficulty})`;
 
     let oddIndex =
     randomNumber(
@@ -107,9 +118,7 @@ function createPuzzle(){
 
 function checkAnswer(){
 
-    if(
-        !gameRunning
-    ){
+    if(!gameRunning){
         return;
     }
 
@@ -144,7 +153,9 @@ function checkAnswer(){
 function startGame(){
 
     score = 0;
+
     level = 1;
+
     time = 30;
 
     gameRunning = true;
@@ -193,6 +204,17 @@ function endGame(){
     clearInterval(
         timerInterval
     );
+
+    if(
+        score > bestScore
+    ){
+
+        bestScore = score;
+
+        bestScoreText.innerText =
+        bestScore;
+
+    }
 
     finalScore.innerText =
     "Score: " + score;
